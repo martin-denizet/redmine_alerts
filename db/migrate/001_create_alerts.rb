@@ -6,10 +6,10 @@ class CreateAlerts < ActiveRecord::Migration
       t.column :date, :datetime
       t.column :alert_watchers, :integer
       t.column :alert_project_members, :integer
-      t.column :alert_project_members, :integer
-      t.column :alert_author, :integer
+      #t.column :alert_author, :integer
       t.column :author_id, :integer
       t.column :created_on, :datetime
+      t.column :sent_on, :datetime
     end
   end
 

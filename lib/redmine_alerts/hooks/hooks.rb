@@ -1,4 +1,4 @@
-module Alerts
+module AlertsPlugin
   class Hooks < Redmine::Hook::ViewListener
     def view_issues_sidebar_issues_bottom(context={ })
       # the controller parameter is part of the current params object

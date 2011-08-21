@@ -1,10 +1,15 @@
-<%#
-# To change this template, choose Tools | Templates
-# and open the template in the editor.
+<% if @issue != nil %>
+  <% content_for :header_tags do %>
+    <%= stylesheet_link_tag 'alerts', :plugin => 'redmine_alerts' %>
+  <% end %>
+  <%
+  @alerts=Alert.find(:all,:conditions=>["issue_id=?",@issue.id])
 %>
-
-<h3>Alerts</h3>
-
-<%= "_view_issues_sidebar_queries_bottom" %>
-
-<%= @issue %>
+  <div class="contextual">
+    <%= toggle_link l(:button_add), 'new-alert-form'%>
+  </div>
+  <h3>Alerts (<%= @alerts.size %>)</h3>
+  <div id="alerts">
+    <%= render :partial => 'alerts/alerts', :locals => {:alerts => @alerts}%>
+  </div>
+<% end %>
