@@ -1,15 +1,24 @@
-<% if @issue != nil %>
-  <% content_for :header_tags do %>
-    <%= stylesheet_link_tag 'alerts', :plugin => 'redmine_alerts' %>
+<% if User.current.allowed_to?({ :controller => 'alerts', :action => 'index' }, nil, :global => true)%>
+  <% require "redmine_alerts/const.rb"%>
+  <% if @issue != nil %>
+    <% content_for :header_tags do %>
+      <%= stylesheet_link_tag 'alerts', :plugin => 'redmine_alerts' %>
+      <%= javascript_include_tag 'countdown.packed.js', :plugin => 'redmine_alerts' %>
+    <% end %>
+    <%
+    @alerts=get_alerts_by_issue(@issue.id)
+  %>
+    <div>
+      <div class="contextual">
+        <% if User.current.allowed_to?({ :controller => 'alerts', :action => 'new' }, nil, :global => true)%>
+          <%= toggle_link l(:button_add_relative), 'new-alert-form'%>
+          <%= toggle_link l(:button_add_absolute), 'new-alert-form-absolute'%>
+        <% end %>
+      </div>
+      <h3><%= l(:label_alerts_count, {:count => @alerts.size.to_s}) %></h3>
+      <div id="alerts">
+        <%= render :partial => 'alerts/alerts', :locals => {:alerts => @alerts}%>
+      </div>
+    </div>
   <% end %>
-  <%
-  @alerts=Alert.find(:all,:conditions=>["issue_id=?",@issue.id])
-%>
-  <div class="contextual">
-    <%= toggle_link l(:button_add), 'new-alert-form'%>
-  </div>
-  <h3>Alerts (<%= @alerts.size %>)</h3>
-  <div id="alerts">
-    <%= render :partial => 'alerts/alerts', :locals => {:alerts => @alerts}%>
-  </div>
 <% end %>
