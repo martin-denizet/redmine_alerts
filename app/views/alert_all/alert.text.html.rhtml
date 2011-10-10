@@ -1,0 +1,19 @@
+<%#
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+%>
+<%= l(:alert_email_reason)%>
+
+<%= format_time(@alert.date,true) %>
+<%= l(:text_issue_added, :id => "##{@issue.id}", :author => h(@issue.author)) %>
+<hr />
+<%= render :partial => "mailer/issue_text_html", :locals => { :issue => @issue, :issue_url => @issue_url } %>
+
+<% if @alert.comment=="" %>
+  <%= l(:alert_no_comment) %>
+<% else %>
+  <%= l(:alert_label_comment)%>:
+  <p style="font-style: italic">
+    <%= @alert.comment %>
+  </p>
+<% end %>

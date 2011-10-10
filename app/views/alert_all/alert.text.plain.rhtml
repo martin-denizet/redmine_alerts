@@ -1,0 +1,14 @@
+<%= l(:alert_email_reason)%>
+
+----------------------------------------
+<%= l(:text_issue_added, :id => "##{@issue.id}", :author => @issue.author) %>
+
+----------------------------------------
+<%= render :partial => "mailer/issue_text_plain", :locals => { :issue => @issue, :issue_url => @issue_url } %>
+
+<% if @alert.comment=="" %>
+  <%= l(:alert_no_comment)%>:
+<% else %>
+  <%= l(:alert_label_comment)%>:
+  <%= @alert.comment %>
+<% end %>

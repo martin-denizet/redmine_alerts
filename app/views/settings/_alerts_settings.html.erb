@@ -1,0 +1,7 @@
+<% defaults = Redmine::Plugin::registered_plugins[:redmine_alerts].settings[:default] %>
+
+<p>
+  <label><%= l(:setting_hide_completed_alerts) %></label>
+  <%= hidden_field_tag 'settings[alerts_hide_completed]', 0 %>
+  <%= check_box_tag 'settings[alerts_hide_completed]', 1, @settings['alerts_hide_completed'].to_i == 1 %>
+</p>

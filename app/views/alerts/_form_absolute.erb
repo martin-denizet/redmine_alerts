@@ -1,0 +1,14 @@
+<%= error_messages_for 'alert' %>
+<% require "redmine_alerts/const.rb"%>
+<p>
+<!--
+*#f.select :relation_type, collection_for_relation_type_select, {}, :onchange => "setPredecessorFieldsVisibility();"%>
+-->
+<p>
+  <%= f.datetime_select :date, :value => alert.date %>
+  <%#= f.text_field :date, :size => 10 %><%#= calendar_for('alert_date') %>
+</p>
+<%= render :partial => 'alerts/recipients', :locals => {:f => f,:alert => alert}%>
+<%= submit_tag (alert.new_record? ? l(:button_add):l(:button_update)) %>
+<%= toggle_link l(:button_cancel), 'new-alert-form-absolute'%>
+</p>

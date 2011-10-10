@@ -1,0 +1,135 @@
+<%# if flash[:error] %>
+  <%#*<p id="errorExplanation">%>
+    <%#= flash[:error] %>
+  <%#*</p>%>
+<%# end %>
+<%= render_flash_messages %>
+<%# Need to check in alert is not nil because the partial is called without executing the controller%>
+<%  @alert = Alert.new if @alert == nil %>
+<% if @alerts.any? %>
+  <ul>
+    <% @alerts.each do |alert| %>
+      <li class="<%= alert.css_class%>">
+        <table class="alert_line">
+          <tr>
+            <td>
+              <div class="tooltip" style="width: auto">
+                <a href="#" class="<%= alert.css_class %>">
+                  <%=  format_time(alert.date,true) %>
+                </a>
+
+                <span class="tip">
+                  <% span="<span id=\"countdown-"+alert.id.to_s+"\"></span>" %>
+                  <%= alert.completed? ? l(:alert_countdown_completed,{:countdown=>time_tag(alert.date)}):l(:alert_countdown,{:countdown=>span}) %><br/>
+                  <%= l(:label_created_by) %> <%= link_to_user alert.author %><br/>
+                  <%= l(:label_created_on) %> <%= format_time(alert.created_on, true) %><br/>
+                  <%= l(:label_comment) %> <%= alert.comment.to_s %><br/>
+                  <%= l(:label_subscribers) %> <%= alert.get_all_subscribers.join(", ") %>
+                </span>
+              </div>
+            </td>
+            <td>
+              <% if not alert.completed? %>
+                <% subscribed = alert.subscribed %>
+                <%= link_to((subscribed ? l(:label_unsubscribe):l(:label_subscribe)), {
+                    :controller => 'alerts',
+                    :action=>(subscribed ? 'unsubscribe' : 'subscribe'),
+                    :id=>alert.id, :issue_id=>@issue.id},
+                  {:class=>(subscribed ? 'icon icon-fav' : 'icon icon-fav-off')}) %>
+              <% end %>
+              <% if User.current.allowed_to?({ :controller => 'alerts', :action => 'destroy' }, nil, :global => true) or
+                  (User.current.allowed_to?({ :controller => 'alerts', :action => 'destroy_own' }, nil, :global => true) and alert.author_id=User.current.id)
+              %>
+                <%
+                url={
+                  :controller => 'alerts',
+                  :action => "destroy",
+                  :id => alert.id
+                }
+              %>
+                <%= link_to_remote image_tag('delete.png'),
+                  :url=>url,
+                  :href => url,
+                  :confirm => l(:text_are_you_sure),
+                  :style => "vertical-align: middle",
+                  :class => 'delete'
+              %>
+              <% end %>
+              <% if User.current.allowed_to?({ :controller => 'alerts', :action => 'edit' }, nil, :global => true)%>
+                <%
+                edit_url={
+                  :controller => 'alerts',
+                  :action => 'edit',
+                  :id => alert.id
+                }
+              %>
+                <%= link_to_remote image_tag('edit.png'),
+                  :url => edit_url,
+                  :href => edit_url,
+                  :style => 'vertical-align: middle',
+                  :class => 'edit'
+              %>
+              <% end %>
+            </td>
+          </tr>
+        </table>
+      </li>
+    <% end %>
+  </ul>
+  <script type="text/javascript">
+    
+  <% @alerts.each do |alert| %>
+    <% if not alert.completed? %>
+                                                                                    var cd<%= alert.id %> = new countdown("countdown-<%= alert.id %>", {
+                                                                                      sec: <%= alert.time_left  %> , //seconds left
+                                                                                      //format how countdown will look
+                                                                                      //TODO: Localize the date
+                                                                                      format: "[{y} years] [{m} months] [{w} weeks] [{d} days] {h}:{i}:{s}",
+                                                                                      end: "Countdown Ended", //text that will appear after end of countdown
+                                                                                      hide_zeros : true, // hide highest units that reached 0
+                                                                                      leading_zeros: true, //show leading zeros for hours minutes and seconds
+      <% if User.current.time_zone!=nil %>
+                                                                                                                              timezone:  <%=  User.current.time_zone.utc_offset/3600 %>
+      <% end %>
+                                                                                      //onend: function(){alert("Alert")} //callback function when countdown ended
+                                                                                    }
+                                                                                  );
+    <% end %>
+  <% end %>
+     
+  </script>
+<% else %>
+  -
+<% end %>
+
+<% remote_form_for(:alert, @alert,
+  :url => {:controller => 'alerts', :action => 'new', :issue_id => @issue.id},
+  :method => :post,
+  :html => {:id => 'new-alert-form', :style => (
+      #@alert.new_record? == false ?'' :
+      'display: none;')
+  }) do |f|%>
+  <%= render :partial => 'alerts/form', :locals => {:f => f, :alert => @alert}%>
+<% end %>
+
+<% remote_form_for(:alert, @alert,
+  :url => {:controller => 'alerts', :action => 'new', :issue_id => @issue.id},
+  :method => :post,
+  :html => {:id => 'new-alert-form-absolute', :style => (
+      #@alert.new_record? == false ?'':
+      'display: none;')
+  }) do |f|%>
+  <%= render :partial => 'alerts/form_absolute', :locals => {:f => f, :alert => @alert}%>
+<% end %>
+
+<%# Edit form %>
+<% if !@alert.new_record? %>
+  <% remote_form_for(:alert, @alert,
+    :url => {:controller => 'alerts', :action => 'edit', :issue_id => @issue.id},
+    :method => :post,
+    :complete => "Form.Element.focus('alert_comment');",
+    :html => {:id => 'edit-alert-form-absolute'}
+  ) do |f|%>
+    <%= render :partial => 'alerts/form_absolute', :locals => {:f => f, :alert => @alert}%>
+  <% end %>
+<% end %>
