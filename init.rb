@@ -9,7 +9,7 @@ Redmine::Plugin.register :redmine_alerts do
   name 'Redmine Alerts plugin'
   author 'Martin Denizet'
   description 'Allow to create configurable, time-based alerts'
-  version '0.0.1-dev'
+  version '0.1.0'
   url 'https://github.com/martin-denizet/redmine_alerts'
   author_url 'https://github.com/martin-denizet'
 
