@@ -1,0 +1,11 @@
+<% if authorized_globally('alerts','new') %>
+  <div class="contextual">
+  <%#= link_to l(:label_alert_new), {:action => 'new'}, :class => 'icon icon-add' %>
+  </div>
+<% end %>
+<h2><%= alerts_index %> &#187 <%= l(:label_my_alerts) %></h2>
+<%= render :partial => 'alerts/list', :locals => {:alerts => @my_alerts}%>
+<% if User.current.allowed_to?({ :controller => 'alerts', :action => 'index_all' }, nil, :global => true)%>
+  <h2><%= l(:label_others_alerts) %></h2>
+  <%= render :partial => 'alerts/list', :locals => {:alerts => @others_alerts}%>
+<% end %>

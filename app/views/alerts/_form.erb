@@ -1,0 +1,13 @@
+<%= error_messages_for 'alert' %>
+<% require "redmine_alerts/const.rb"%>
+
+<p>
+<p>
+  <%= f.text_field :duration, :size => 3, :value => '1'%>
+  <%= f.select :unit, options_for_select(time_units,3) %>
+  <%= f.select :method, options_for_select(timing) %>
+</p>
+<%= render :partial => 'alerts/recipients', :locals => {:f => f,:alert => alert}%>
+<%= submit_tag (alert.new_record? ? l(:button_add):l(:button_update)) %>
+<%= toggle_link l(:button_cancel), 'new-alert-form'%>
+</p>

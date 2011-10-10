@@ -3,36 +3,12 @@ class AlertsController < ApplicationController
   before_filter :authorize_global
 
   def index
-    @my_alerts = Alert.find(:all,
-      :conditions => ["("+
-          "(#{Alert.table_name}.alert_watchers=1 AND #{Watcher.table_name}.user_id=?) OR "+
-          "(#{Alert.table_name}.alert_project_members=1 AND #{Member.table_name}.user_id=?) OR" +
-          "(#{AlertSubscribers.table_name}.user_id=?)
-    )"+
-          " AND #{Alert.table_name}.sent_on IS NULL",
-        User.current.id, User.current.id, User.current.id
-      ],
-      :include => [ :issue, :author, :subscribers ],
-      :joins => "LEFT OUTER JOIN #{Member.table_name} ON #{Member.table_name}.project_id = #{Issue.table_name}.project_id"+
-        " LEFT OUTER JOIN #{Watcher.table_name} ON #{Watcher.table_name}.watchable_id = #{Issue.table_name}.id AND (#{Watcher.table_name}.watchable_type='Issue')",
-      :order => "#{Alert.table_name}.date ASC")
+    @my_alerts = get_alerts_by_user(User.current.id)
 
     @others_alerts=nil
-
+    
     if User.current.allowed_to?({ :controller => 'alerts', :action => ':index_all' }, nil, :global => true)
-      @others_alerts = Alert.find(:all,
-        :conditions => ["("+
-            "(#{Alert.table_name}.alert_watchers=1 AND #{Watcher.table_name}.user_id!=?) AND "+
-            "(#{Alert.table_name}.alert_project_members=1 AND #{Member.table_name}.user_id!=?) AND " +
-            "(#{AlertSubscribers.table_name}.user_id!=?)
-    )"+
-            " AND #{Alert.table_name}.sent_on IS NULL",
-          User.current.id, User.current.id, User.current.id
-        ],
-        :include => [ :issue, :author, :subscribers ],
-        :joins => "LEFT OUTER JOIN #{Member.table_name} ON #{Member.table_name}.project_id = #{Issue.table_name}.project_id"+
-          " LEFT OUTER JOIN #{Watcher.table_name} ON #{Watcher.table_name}.watchable_id = #{Issue.table_name}.id AND (#{Watcher.table_name}.watchable_type='Issue')",
-        :order => "#{Alert.table_name}.date ASC")
+      @others_alerts = get_alerts_excluding_user(User.current.id)
     end
   end
 
@@ -43,7 +19,7 @@ class AlertsController < ApplicationController
         @alert = Alert.new if @alert==nil
         @alerts=get_alerts_by_issue(@issue.id)
         render (:update) { |page|
-          page.replace_html 'alerts', :partial => 'alerts/alerts', :locals => {:alerts => @alerts, 
+          page.replace_html 'alerts', :partial => 'alerts/alerts', :locals => {:alerts => @alerts,
             #:issue=>@issue,
             :alert=>@alert}
         }
@@ -58,7 +34,6 @@ class AlertsController < ApplicationController
   end
 
   def subscribe
-
     @issue = Issue.find(params[:issue_id])
     @alert = Alert.find(params[:id])
     
@@ -88,8 +63,10 @@ class AlertsController < ApplicationController
         @alert.comment=params[:alert][:comment]
         @alert.alert_watchers=params[:alert][:alert_watchers]
         @alert.alert_project_members=params[:alert][:alert_project_members]
-        unless flash[:error]
+        unless flash.now[:error]
           @alert.save
+          flash.now[:notice]=l(:alert_notice_update_success)
+          @alert=Alert.new({:issue_id => @alert.issue_id})
           render_update
         else
           render_edit
@@ -99,7 +76,6 @@ class AlertsController < ApplicationController
       end
     else
       render_edit
-
     end
   end
 

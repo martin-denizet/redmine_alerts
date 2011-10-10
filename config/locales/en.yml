@@ -39,3 +39,4 @@ en:
   alert_email_reason: "You receive this email because an alert has been triggered on the following issue:"
   alert_email_subject: "[Redmine Alert]%{issue} %{reason}"
   label_others_alerts: "Other's alerts"
+  alert_notice_update_success: "Alert updated"

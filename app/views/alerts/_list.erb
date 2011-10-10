@@ -1,0 +1,36 @@
+<div id="alerts">
+  <% if alerts && alerts.any? %>
+    <table class="list issues">
+      <thead><tr>
+          <th>
+            <%= l(:field_project) %>
+          </th>
+          <th>
+            <%= l(:label_alert_date) %>
+          </th>
+          <th>
+            <%= l(:field_issue) %>
+          </th>
+          <th>
+            <%= l(:label_comment) %>
+          </th>
+          <th>
+            <%= l(:label_created_by) %>
+          </th>
+        </tr></thead>
+      <tbody>
+        <% alerts.each do |alert| %>
+          <tr>
+            <td><%= link_to_project(alert.issue.project) %></td>
+            <td><%= format_time(alert.date,true) %></td>
+            <td><%= link_to_issue(alert.issue, :truncate => 60) %></td>
+            <td><%= truncate(alert.comment.to_s, :length => 60) %></td>
+            <td><%= avatar(alert.author, :size => "16").to_s + link_to_user(alert.author, :class => 'user').to_s %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="nodata"><%= l(:label_no_data) %></p>
+  <% end %>
+</div>

@@ -1,0 +1,17 @@
+<% require 'redmine_alerts/const' %>
+<% if User.current.allowed_to?({ :controller => 'alerts', :action => 'index' }, nil, :global => true)%>
+  <% content_for :header_tags do %>
+    <%= stylesheet_link_tag 'alerts', :plugin => 'redmine_alerts' %>
+  <% end %>
+
+  <%
+  @alerts = get_alerts_by_user(User.current.id)
+%>
+  <h3>
+    <%= l(:label_alerts_count, {:count => @alerts.size.to_s}) %>
+  </h3>
+
+  <%= render :partial => 'alerts/list', :locals => {:alerts => @alerts}%>
+<% else %>
+  <%= l(:alert_permission_denied) %>
+<% end %>

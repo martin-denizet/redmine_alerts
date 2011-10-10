@@ -1,0 +1,53 @@
+/* 
+    Document   : alerts
+    Created on : Aug 14, 2011, 1:10:57 AM
+    Author     : martin
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+#alerts li {
+    display: list-item;
+    list-style-image: url('/plugin_assets/redmine_alerts/images/clock.png');
+    margin: 0 2px 0 0;
+    padding: 0;
+}
+
+#alerts li.completed {
+    display: list-item;
+    list-style-image: url('/plugin_assets/redmine_alerts/images/clock_disabled.png');
+    margin: 0 2px 0 0;
+    padding: 0;
+}
+
+#alerts li.hot {
+    display: list-item;
+    list-style-image: url('/plugin_assets/redmine_alerts/images/clock_ringing.gif');
+    margin: 0 2px 0 0;
+    padding: 0;
+}
+
+a.hot{
+    color: #900;
+    text-decoration: blink;
+    font-weight: bold;
+}
+
+a.completed{
+    color: #999999;
+    text-decoration: line-through;
+}
+
+.alert_line td{
+    padding: 0px;
+}
+
+#alerts table{
+    vertical-align: top;
+
+}
