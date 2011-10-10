@@ -1,0 +1,8 @@
+0.1.0 (2011/10/11)
+-----------------
+First published version with features:
+* Alerts defined on a datetime or relative to the issue Start date or Due date
+* Countdown to alert
+* Possible to subscribe to alerts or to alert the issue's watchers or project members
+* MyPage integration
+* Global permissions
