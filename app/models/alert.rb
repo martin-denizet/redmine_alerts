@@ -22,19 +22,21 @@ class Alert < ActiveRecord::Base
 
   def get_all_subscribers
     users=[]
-    if self.subscribers
+    if self.subscribers.any?
         users += self.subscribers
     end
 
-    if self.alert_watchers
+    if self.alert_watchers?
         users += self.issue.watcher_users
     end
 
-    if self.alert_project_members
+    if self.alert_project_members?
         users += self.issue.project.users
     end
 
-    users.uniq
+    users=users.uniq
+    #select only the active users
+    users = users.select {|user| user.status==1}
   end
 
   def subscribed

@@ -112,7 +112,7 @@ class AlertsController < ApplicationController
               :alert_id=>@alert.id
             })
           subscription.save
-          @alert = Alert.new()
+          @alert = Alert.new({:issue_id=>@issue.id})
         end
         render_update
       rescue

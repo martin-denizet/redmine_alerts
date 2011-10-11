@@ -40,8 +40,7 @@ class Alert_all < Mailer
     alerts.each{|alert|
       puts "Processing Alert '"+alert.id.to_s+"' Alert date:"+alert.date.to_s
       users = alert.get_all_subscribers
-      #select only the active users
-      users = users.select {|user| user.status==1}
+      
       users.each{|user|
         deliver_alert_all(user,alert)
       }
