@@ -14,7 +14,7 @@ class Alert_all < Mailer
   def alert_all(user,alert)
     puts "Sending email to "+user.to_s+"("+user.mail+")"
     set_language_if_valid user.language
-    recipients "martin.denizet@irec.cn" #user.mail
+    recipients user.mail
     subject l(:alert_email_subject, {:issue => '#'+alert.issue.id.to_s,:reason => alert.comment})
     body :alert => alert, :issue => Issue.find(alert.issue_id), :issue_url => {
       :controller => 'issue',
