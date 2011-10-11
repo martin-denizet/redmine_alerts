@@ -21,12 +21,12 @@ Roadmap
 Installation
 ------------
 
-First setup the plugin:
+First setup the plugin (Considering your Redmine installation is in /var/www/redmine/):
 
-    cd /var/www/redmine/vendors/plugins
+    cd /var/www/redmine/vendor/plugins
     git clone git://github.com/martin-denizet/redmine_alerts.git
     cd /var/www/redmine
-    rake db:migrate_plugins
+    rake db:migrate_plugins RAILS_ENV=production
 
 Define a crontab:
 
