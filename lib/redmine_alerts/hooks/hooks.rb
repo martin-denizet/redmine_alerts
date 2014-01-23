@@ -12,6 +12,5 @@ module AlertsPlugin
       # Instead of the above statement, you could return any string generated
       # by your code. That string will be included into the view
     end
-
   end
 end

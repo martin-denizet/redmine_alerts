@@ -42,7 +42,7 @@ def get_alerts_excluding_user(user_id)
     :conditions => ["(NOT ("+
         "(#{Alert.table_name}.alert_watchers=1 AND #{Watcher.table_name}.user_id=?) OR "+
         "(#{Alert.table_name}.alert_project_members=1 AND #{Member.table_name}.user_id=?) OR" +
-        "(#{AlertSubscribers.table_name}.user_id IS NOT NULL AND #{AlertSubscribers.table_name}.user_id=?)
+         "(#{AlertSubscribers.table_name}.user_id=?)
     ))"+
         " AND #{Alert.table_name}.sent_on IS NULL",
       user_id, user_id, user_id

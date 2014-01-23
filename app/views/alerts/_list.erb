@@ -17,6 +17,7 @@
           <th>
             <%= l(:label_created_by) %>
           </th>
+          <th></th>
         </tr></thead>
       <tbody>
         <% alerts.each do |alert| %>
@@ -26,6 +27,12 @@
             <td><%= link_to_issue(alert.issue, :truncate => 60) %></td>
             <td><%= truncate(alert.comment.to_s, :length => 60) %></td>
             <td><%= avatar(alert.author, :size => "16").to_s + link_to_user(alert.author, :class => 'user').to_s %></td>
+            <td><% subscribed = alert.subscribed %>
+                <%= link_to((subscribed ? l(:label_unsubscribe):l(:label_subscribe)), {
+                    :controller => 'alerts',
+                    :action=>(subscribed ? 'unsubscribe' : 'subscribe'),
+                    :id=>alert.id, :issue_id=>alert.issue_id},
+                  {:class=>(subscribed ? 'icon icon-fav' : 'icon icon-fav-off')}) %></td>
           </tr>
         <% end %>
       </tbody>
